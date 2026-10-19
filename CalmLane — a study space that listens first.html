@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CalmLane — a study space that listens first</title>
+<meta name="description" content="CalmLane asks how you feel, then reshapes your study space: focus timer, brain dump and breathing, with zero guilt and accessibility built in.">
+<meta name="theme-color" content="#f7f4ee">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌿%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--h:230;--ink:#1c2a2e;--mut:#4b5a5e;--card:rgba(255,255,255,.72);--line:rgba(28,42,46,.14);--acc:hsl(var(--h) 55% 30%);--bg:hsl(var(--h) 60% 94%);--b1:hsl(var(--h) 80% 82%);--b2:hsl(calc(var(--h) + 50) 80% 86%);--on:#fff;--fs:100%;--ls:0;
+--serif:'Fraunces',Georgia,serif;--sans:'Atkinson Hyperlegible',system-ui,sans-serif;--ease:cubic-bezier(.22,1,.36,1);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#eef3f3;--mut:#b9c6c8;--card:rgba(20,28,32,.7);--line:rgba(255,255,255,.18);--acc:hsl(var(--h) 70% 78%);--bg:hsl(var(--h) 25% 10%);--b1:hsl(var(--h) 45% 22%);--b2:hsl(calc(var(--h) + 50) 40% 20%);--on:#10181a}}
+:root[data-theme=dark]{--ink:#eef3f3;--mut:#b9c6c8;--card:rgba(20,28,32,.7);--line:rgba(255,255,255,.18);--acc:hsl(var(--h) 70% 78%);--bg:hsl(var(--h) 25% 10%);--b1:hsl(var(--h) 45% 22%);--b2:hsl(calc(var(--h) + 50) 40% 20%);--on:#10181a}
+:root[data-contrast=high]{--ink:#000;--mut:#000;--card:#fff;--line:#000;--acc:#00338a;--bg:#fff;--b1:#fff;--b2:#fff;--on:#fff}
+:root[data-theme=dark][data-contrast=high]{--ink:#fff;--mut:#fff;--card:#000;--line:#fff;--acc:#9ec5ff;--bg:#000;--b1:#000;--b2:#000;--on:#000}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:var(--fs);scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:var(--sans);color:var(--ink);letter-spacing:var(--ls);line-height:var(--lh,1.55);background:var(--bg);min-height:100vh;overflow-x:hidden;transition:background .8s var(--ease)}
+body.dys{--sans:'Atkinson Hyperlegible',Verdana,sans-serif;--ls:.06em;--lh:1.9;word-spacing:.12em}
+.mesh{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.mesh i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(70px);opacity:.75;transition:background 1s var(--ease);animation:drift 26s ease-in-out infinite alternate}
+.mesh i:nth-child(1){background:var(--b1);left:-15vmax;top:-15vmax}.mesh i:nth-child(2){background:var(--b2);right:-20vmax;bottom:-20vmax;animation-duration:34s}
+@keyframes drift{to{transform:translate(8vmax,6vmax) scale(1.1)}}
+body.still *,body.still *::before,body.still *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.1;margin:0}
+a,button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px;border-radius:8px}
+.skip{position:absolute;left:12px;top:-60px;background:var(--ink);color:var(--bg);padding:12px 16px;border-radius:10px;z-index:99}.skip:focus{top:12px}
+.btn{min-height:44px;padding:10px 20px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:transform .25s var(--ease),background .2s}
+.btn:hover{transform:translateY(-2px)}.btn.p{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:clamp(18px,3vw,28px);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.06)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(14px,4vw,32px)}
+/* hero */
+#hero{min-height:92vh;display:grid;place-items:center;text-align:center;position:relative;padding:48px 0}
+#orb{position:absolute;inset:0;width:100%;height:100%}
+.hero-in{position:relative;z-index:1;max-width:760px;pointer-events:none}.hero-in>*{pointer-events:auto}
+.hero-in h1{font-size:clamp(2.6rem,8vw,5.6rem);letter-spacing:-.02em}
+.hero-in h1 em{color:var(--acc)}
+.hero-in p{font-size:1.15rem;color:var(--mut);max-width:52ch;margin:18px auto 26px}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.chips{margin-top:26px}.chip{min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.chip[aria-checked=true]{border:2px solid var(--acc);background:var(--bg);font-weight:700}
+/* app */
+#app{padding:40px 0 80px}
+nav.tabs{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 18px}
+nav.tabs button{white-space:nowrap}nav.tabs [aria-current=page]{background:var(--ink);color:var(--bg)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px}
+.eyebrow{color:var(--acc);font-weight:700;font-size:.9rem}
+h2.big{font-size:clamp(2rem,5vw,3.2rem);margin:6px 0 10px}
+.sub{color:var(--mut);margin:0 0 22px;max-width:60ch}
+.rec h3{font-size:1.9rem;margin:6px 0 8px}
+.name{border:1px solid var(--line);background:transparent;border-radius:12px;padding:8px 12px;min-height:44px;width:12rem}
+ul.tasks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.task{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:16px;background:var(--bg);border:1px solid var(--line)}
+.task .t{flex:1;min-width:0;overflow-wrap:break-word;word-break:normal}
+.task.done .t{text-decoration:line-through;color:var(--mut)}
+.task input{width:24px;height:24px;margin-top:2px;accent-color:var(--acc);flex:none}
+.tag{font-size:.8rem;padding:2px 10px;border-radius:99px;border:1px solid var(--line);white-space:nowrap;flex:none}
+.x{flex:none;width:44px;height:44px;margin:-8px -8px -8px 0;border:0;background:none;cursor:pointer;font-size:1.2rem;border-radius:12px}
+.empty{color:var(--mut);text-align:center;padding:14px 6px;font-size:.95rem}
+.ripple{animation:rip .6s var(--ease)}@keyframes rip{0%{box-shadow:0 0 0 0 var(--acc)}100%{box-shadow:0 0 0 18px transparent}}
+textarea{width:100%;min-height:150px;border-radius:18px;border:1px solid var(--line);background:var(--bg);padding:14px;resize:vertical}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px;margin-top:20px;align-items:start}
+.cols h3{font-size:1.3rem;margin-bottom:12px}
+/* focus + breathe */
+.ringbox{display:grid;place-items:center;margin:8px 0 18px}
+.ring{position:relative;width:min(70vw,280px)}.ring svg{width:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10}.ring .bg{stroke:var(--line)}.ring .fg{stroke:var(--acc);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.time{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:3rem}
+.orbB{width:min(60vw,240px);aspect-ratio:1;border-radius:50%;margin:30px auto;background:radial-gradient(circle at 35% 30%,var(--b2),var(--acc));box-shadow:0 0 60px var(--b1);transition:transform 4s ease-in-out}
+.cue{font-family:var(--serif);font-size:1.8rem;text-align:center;min-height:2.4rem}
+.bar rect{fill:var(--b1);stroke:var(--acc);stroke-width:1.5}.bar rect.best{fill:var(--acc)}
+svg text{fill:var(--ink);font-size:12px;font-family:var(--sans)}
+.stat{font-family:var(--serif);font-size:2.6rem}
+/* case */
+#case{padding:30px 0 60px}.cs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;margin-top:22px}
+footer{padding:30px 0 120px;color:var(--mut);font-size:.95rem}
+/* a11y */
+#a11yb{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:1px solid var(--line);background:var(--ink);color:var(--bg);font-size:1.5rem;cursor:pointer;z-index:20}
+#panel{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:84px;width:min(92vw,340px);max-height:75vh;overflow:auto;z-index:21;display:none}
+#panel.open{display:block}#panel label{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px;border-bottom:1px solid var(--line)}
+#panel input[type=checkbox]{width:24px;height:24px;accent-color:var(--acc)}
+body.calm #hero,body.calm #case,body.calm .hideCalm{display:none}
+@media(max-width:600px){.name{width:100%}}
+</style>
+</head>
+<body>
+<a class="skip" href="#app">Skip to main content</a>
+<div class="mesh" aria-hidden="true"><i></i><i></i></div>
+
+<header id="hero" role="banner">
+  <canvas id="orb" aria-hidden="true"></canvas>
+  <div class="hero-in wrap">
+    <p class="eyebrow">A study space that listens first</p>
+    <h1>Study the way <em>you</em> feel today.</h1>
+    <p>CalmLane asks how you’re doing, then quietly reshapes everything around the answer. No streaks to break. No guilt. Just the next kind step.</p>
+    <div class="row"><a class="btn p" href="#app" id="tryit">Try it in 20 seconds</a><a class="btn" href="#app">Skip straight in</a></div>
+    <div class="chips row" role="radiogroup" aria-label="Pick a mood to preview the orb" id="heroChips"></div>
+  </div>
+</header>
+
+<main id="app" class="wrap" tabindex="-1">
+  <nav class="tabs" aria-label="Sections" id="tabs"></nav>
+
+  <section id="v-today" data-view>
+    <p class="eyebrow" id="eb"></p>
+    <h2 class="big" id="greet"></h2>
+    <p class="sub" id="sub"></p>
+    <div class="row hideCalm" style="justify-content:flex-start;margin-bottom:18px">
+      <label for="nm" class="sub" style="margin:0;align-self:center">What should I call you?</label>
+      <input id="nm" class="name" maxlength="20" autocomplete="given-name" placeholder="Your name">
+    </div>
+    <div class="row hideCalm" style="justify-content:flex-start;margin-bottom:22px" role="radiogroup" aria-label="How are you feeling right now?" id="moods"></div>
+    <div class="grid2">
+      <div class="card rec"><p class="eyebrow">Recommended right now</p><h3 id="rt"></h3><p id="rd" class="sub"></p>
+        <details><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center">Why this?</summary><p id="rw" class="sub"></p></details>
+        <button class="btn p" id="rgo" style="margin-top:10px">Start</button></div>
+      <div class="card"><h3 id="nt" style="margin-bottom:12px">Your next few</h3><ul class="tasks" id="next"></ul></div>
+    </div>
+  </section>
+
+  <section id="v-focus" data-view hidden>
+    <h2 class="big">Focus room</h2><p class="sub">One task. Notifications off. Leave whenever you need to.</p>
+    <div class="card" style="text-align:center">
+      <div class="row" role="radiogroup" aria-label="Session length" id="durs"></div>
+      <div class="ringbox"><div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><circle class="bg" cx="100" cy="100" r="90"/><circle class="fg" id="fg" cx="100" cy="100" r="90" stroke-dasharray="565.5" stroke-dashoffset="0"/></svg><div class="time" id="time">25:00</div></div></div>
+      <div class="row"><button class="btn p" id="ss">Start</button><button class="btn" id="rs">Reset</button><button class="btn" id="gx">Gentle exit</button></div>
+      <p id="fmsg" class="sub" role="status" aria-live="polite" style="margin:16px auto 0;min-height:1.6em"></p>
+    </div>
+  </section>
+
+  <section id="v-dump" data-view hidden>
+    <h2 class="big">Empty the tabs in your head.</h2><p class="sub">Messy is fine. One thought per line, and we’ll do the tidying.</p>
+    <div class="card"><label for="dt" style="font-weight:700">What’s rattling around?</label>
+      <textarea id="dt" placeholder="email prof about extension&#10;revise thermodynamics chapter 3&#10;buy printer ink&#10;write lab report discussion"></textarea>
+      <div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn p" id="sort">Sort it for me</button><button class="btn" id="ex">Fill an example</button><button class="btn" id="clr">Clear finished</button></div></div>
+    <div class="cols" id="cols"></div>
+  </section>
+
+  <section id="v-breathe" data-view hidden>
+    <h2 class="big">Breathe</h2><p class="sub">Follow the circle. Stop any time.</p>
+    <div class="card" style="text-align:center"><div class="row" role="radiogroup" aria-label="Pattern" id="pats"></div>
+      <div class="orbB" id="bo" aria-hidden="true"></div><div class="cue" id="cue" role="status" aria-live="polite">Ready when you are</div>
+      <button class="btn p" id="bgo" style="margin-top:14px">Begin</button></div>
+  </section>
+
+  <section id="v-insights" data-view hidden>
+    <h2 class="big">Your week, kindly.</h2><p class="sub" id="ins"></p>
+    <div class="grid2"><div class="card"><h3>Focus minutes by day</h3><svg id="bars" viewBox="0 0 320 180" role="img" aria-label="Focus minutes by day"></svg></div>
+      <div class="card"><div class="stat" id="s1">0</div><p>focus minutes this week</p><div class="stat" id="s2">0</div><p>tasks finished</p><p class="sub">We count days you showed up, never days you missed.</p></div></div>
+  </section>
+</main>
+
+<section id="case" class="wrap" aria-labelledby="ch">
+  <h2 id="ch" style="font-size:clamp(1.8rem,4vw,2.8rem)">Designing for the days you don’t feel like it.</h2>
+  <div class="cs">
+    <div class="card"><h3>Problem</h3><p>Exam stress, scattered tasks and endless feeds. Many productivity apps add pressure with red badges, streak shaming and dense dashboards, which are hardest to use on the days you need them most.</p></div>
+    <div class="card"><h3>Design hypothesis</h3><p>On low-energy days, people need fewer choices, not more features. This is a design hypothesis drawn from common student pain points; we haven’t run a formal study yet.</p></div>
+    <div class="card"><h3>Solution</h3><p>The Shapeshifter. One honest question reshapes colour, motion, density, copy and the recommended tool. Drained gets one tiny task. Energised gets the hard thing first.</p></div>
+    <div class="card"><h3>What we’d measure</h3><p>Sessions started on low-mood days, time to understand the product, and retention without streaks. These are goals for a pilot, not results.</p></div>
+  </div>
+</section>
+
+<footer class="wrap"><p><strong>Built for Hyperbloom October.</strong> Accessibility: skip link, full keyboard use, 3px focus rings, aria-live timers, dyslexia-friendly mode, text and spacing controls, high contrast, reduced motion, calm mode, 44px targets, icons plus labels. Type: Fraunces &amp; Atkinson Hyperlegible. Sound: Web Audio. Charts: hand-drawn SVG.</p></footer>
+
+<button id="a11yb" aria-label="Accessibility settings" aria-expanded="false" aria-controls="panel">♿</button>
+<div id="panel" class="card" role="dialog" aria-label="Accessibility settings">
+  <h3 style="margin-bottom:8px">Make it yours</h3>
+  <label>Dyslexia-friendly text<input type="checkbox" id="a-dys"></label>
+  <label>High contrast<input type="checkbox" id="a-hc"></label>
+  <label>Reduce motion<input type="checkbox" id="a-rm"></label>
+  <label>Calm mode (one task only)<input type="checkbox" id="a-calm"></label>
+  <label for="a-fs">Text size<input type="range" id="a-fs" min="90" max="150" step="5" value="100"></label>
+  <label for="a-th">Theme<select id="a-th" class="name" style="width:auto"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const MOODS={
+ energised:{h:18,l:'Energised',i:'☀️',t:n=>`Let’s ride this wave, ${n}.`,s:'Hardest thing first, while the tank is full.',tool:['45-minute deep session','focus',45,'Your energy is high, so a longer block gets the hard task done before it dips.'],pick:'deep'},
+ focused:{h:230,l:'Focused',i:'🎯',t:n=>`Clear head, clear lane, ${n}.`,s:'You’re in a good spot. Pick the meaty task and protect 25 minutes.',tool:['25-minute focus','focus',25,'A classic block suits a steady mind: long enough to matter, short enough to finish.'],pick:'medium'},
+ okay:{h:140,l:'Okay',i:'🌿',t:n=>`Steady does it, ${n}.`,s:'No pressure to be brilliant. A medium task is plenty.',tool:['15-minute starter','focus',15,'When you’re just okay, a short block lowers the cost of starting.'],pick:'medium'},
+ anxious:{h:175,l:'Anxious',i:'🌊',t:n=>`One breath first, ${n}.`,s:'Slow down. Breathe, then empty your head onto the page.',tool:['4-7-8 breathing','breathe',0,'A longer exhale tells your body it’s safe, so thinking gets easier afterwards.'],pick:'quick'},
+ drained:{h:270,l:'Drained',i:'🌙',t:n=>`You showed up. That counts, ${n}.`,s:'Just one tiny thing, then a 60-second breather. Everything else is hidden.',tool:['60-second breather','breathe',0,'When you’re drained, rest is the productive choice. One tiny task is a win.'],pick:'quick'}};
+const KEY='calmlane.v2';let S={mood:'focused',name:'',tasks:[],mins:[35,70,30,55,25,40,20],done:0,a:{dys:0,hc:0,rm:0,calm:0,fs:100,th:'auto'}};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* radiogroups */
+function radios(el,items,cur,on){el.innerHTML=items.map(([v,l])=>`<button class="chip" role="radio" aria-checked="${v==cur}" data-v="${v}" tabindex="${v==cur?0:-1}">${l}</button>`).join('');
+ el.onclick=e=>{const b=e.target.closest('.chip');if(b)on(b.dataset.v)};
+ el.onkeydown=e=>{const k={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];if(!k)return;e.preventDefault();const bs=[...el.children],i=bs.findIndex(b=>b.dataset.v==String(cur));on(bs[(i+k+bs.length)%bs.length].dataset.v);setTimeout(()=>el.querySelector('[tabindex="0"]').focus())}}
+/* views */
+const VIEWS=[['today','Today'],['focus','Focus'],['dump','Dump'],['breathe','Breathe'],['insights','Insights']];let view='today';
+function go(v){view=v;$$('[data-view]').forEach(s=>s.hidden=s.id!='v-'+v);renderTabs();if(v=='insights')drawIns();if(v!='breathe')stopB()}
+function renderTabs(){$('#tabs').innerHTML=VIEWS.map(([v,l])=>`<button class="btn ${v!='today'?'hideCalm':''}" data-v="${v}" ${v==view?'aria-current="page"':''}>${l}</button>`).join('');$('#tabs').onclick=e=>{const b=e.target.closest('button');if(b)go(b.dataset.v)}}
+/* mood */
+function setMood(m){S.mood=m;save();const d=MOODS[m];document.documentElement.style.setProperty('--h',d.h);
+ const apply=()=>{renderToday();radios($('#heroChips'),Object.entries(MOODS).map(([k,v])=>[k,v.i+' '+v.l]),S.mood,setMood);radios($('#moods'),Object.entries(MOODS).map(([k,v])=>[k,v.i+' '+v.l]),S.mood,setMood);drawOrbColor()};
+ document.startViewTransition&&!S.a.rm?document.startViewTransition(apply):apply()}
+function renderToday(){const d=MOODS[S.mood],n=S.name||'friend';$('#eb').textContent='Feeling '+d.l.toLowerCase();$('#greet').textContent=d.t(n);$('#sub').textContent=d.s;
+ $('#rt').textContent=d.tool[0];$('#rd').textContent=d.tool[1]=='focus'?`${d.tool[2]} minutes, one task, notifications off. We’ll chime softly when it’s done.`:'A slow, guided breath. Your pace, not ours.';$('#rw').textContent=d.tool[3];
+ $('#rgo').textContent=d.tool[1]=='focus'?'Start focus':'Start breathing';$('#rgo').onclick=()=>{if(d.tool[1]=='focus'){setDur(d.tool[2]);go('focus')}else go('breathe')};
+ const open=S.tasks.filter(t=>!t.d);const order={quick:0,medium:1,deep:2};
+ open.sort((a,b)=>d.pick=='deep'?order[b.k]-order[a.k]:d.pick=='quick'?order[a.k]-order[b.k]:Math.abs(order[a.k]-1)-Math.abs(order[b.k]-1));
+ const lim=(S.mood=='drained'||S.a.calm)?1:3;$('#nt').textContent=lim==1?'Just this one':'Your next few';
+ $('#next').innerHTML=open.length?open.slice(0,lim).map(taskHTML).join(''):'<li class="empty">Nothing on your plate. Either you’re done (lovely) or your head’s full. Try the brain dump.</li>'}
+$('#nm').value=S.name;$('#nm').oninput=e=>{S.name=e.target.value.trim();save();renderToday()};
+/* tasks */
+const taskHTML=t=>`<li class="task ${t.d?'done':''}" data-id="${t.id}"><input type="checkbox" ${t.d?'checked':''} aria-label="Finished: ${esc(t.t)}"><span class="t">${esc(t.t)}</span><span class="tag">${{quick:'⚡ Quick',medium:'◐ Medium',deep:'◆ Deep'}[t.k]}</span><button class="x" aria-label="Remove: ${esc(t.t)}">×</button></li>`;
+function kind(s){const l=s.toLowerCase();if(/\b(write|essay|revise|study|chapter|report|paper|project|practice|thesis|prepare|design)\b/.test(l)||s.length>60)return'deep';if(/\b(email|reply|buy|call|book|pay|text|print|order|send|ask)\b/.test(l)||s.length<28)return'quick';return'medium'}
+function renderCols(){const g={quick:['Quick wins','under 5 minutes'],medium:['Medium','a short sit-down'],deep:['Deep work','needs a clear block']};
+ $('#cols').innerHTML=Object.entries(g).map(([k,[l,s]])=>{const a=S.tasks.filter(t=>t.k==k);return`<div class="card"><h3>${l} <small style="font-family:var(--sans);color:var(--mut);font-size:.9rem">(${a.length})</small></h3><ul class="tasks" data-k="${k}">${a.map(taskHTML).join('')||`<li class="empty">All clear here. ${s}.</li>`}</ul></div>`}).join('')}
+document.addEventListener('click',e=>{const li=e.target.closest('.task');if(!li)return;const t=S.tasks.find(x=>x.id==li.dataset.id);if(!t)return;
+ if(e.target.matches('.x')){S.tasks=S.tasks.filter(x=>x!==t)}else if(e.target.matches('input')){t.d=e.target.checked;if(t.d){S.done++;li.classList.add('ripple')}else S.done=Math.max(0,S.done-1)}else return;save();setTimeout(()=>{renderCols();renderToday()},t.d?350:0)});
+$('#sort').onclick=()=>{const ls=$('#dt').value.split('\n').map(s=>s.trim()).filter(Boolean);ls.forEach(s=>S.tasks.push({id:Date.now()+Math.random(),t:s,k:kind(s),d:0}));$('#dt').value='';save();renderCols();renderToday()};
+$('#ex').onclick=()=>{$('#dt').value='email prof about extension\nrevise thermodynamics chapter 3\nbuy printer ink\nfigure out what to say to flatmates about the dishes\nwrite lab report discussion\nmake flashcards for chapter 6';$('#dt').focus()};
+$('#clr').onclick=()=>{S.tasks=S.tasks.filter(t=>!t.d);save();renderCols();renderToday()};
+/* focus */
+let dur=25,left=25*60,tm=null,endAt=0;const CIRC=565.5;
+function setDur(m){dur=m;reset();radios($('#durs'),[[15,'15 min'],[25,'25 min'],[45,'45 min']],dur,v=>setDur(+v))}
+function paint(){const m=Math.floor(left/60),s=left%60;$('#time').textContent=`${m}:${String(s).padStart(2,'0')}`;$('#fg').style.strokeDashoffset=CIRC*(1-left/(dur*60))}
+function reset(){clearInterval(tm);tm=null;left=dur*60;$('#ss').textContent='Start';paint()}
+function chime(){try{const c=new(window.AudioContext||window.webkitAudioContext)();[660,880,990].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.frequency.value=f;o.type='sine';g.gain.setValueAtTime(0,c.currentTime+i*.35);g.gain.linearRampToValueAtTime(.18,c.currentTime+i*.35+.05);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.35+1.2);o.connect(g).connect(c.destination);o.start(c.currentTime+i*.35);o.stop(c.currentTime+i*.35+1.3)})}catch(e){}}
+$('#ss').onclick=()=>{if(tm){clearInterval(tm);tm=null;$('#ss').textContent='Resume';return}
+ endAt=Date.now()+left*1000;$('#ss').textContent='Pause';$('#fmsg').textContent='Focus started. One task, nothing else.';
+ tm=setInterval(()=>{left=Math.max(0,Math.round((endAt-Date.now())/1000));paint();if(left%300==0&&left>0)$('#fmsg').textContent=Math.round(left/60)+' minutes to go.';
+  if(left<=0){clearInterval(tm);tm=null;chime();S.mins[(new Date().getDay()+6)%7]+=dur;save();$('#fmsg').textContent='Done. That was real work. Take a breather.';$('#ss').textContent='Start';left=dur*60}},1000)};
+$('#rs').onclick=()=>{reset();$('#fmsg').textContent=''};
+$('#gx').onclick=()=>{reset();$('#fmsg').textContent='No problem. Stopping early still counts. Come back when you’re ready.'};
+/* breathe */
+let bt=null,running=false;const PATS={'4-7-8':[['Breathe in',4],['Hold',7],['Breathe out',8]],'Box':[['Breathe in',4],['Hold',4],['Breathe out',4],['Hold',4]]};let pat='4-7-8';
+function stopB(){running=false;clearTimeout(bt);$('#bgo').textContent='Begin';$('#bo').style.transform='scale(1)';$('#cue').textContent='Ready when you are'}
+function stepB(i){if(!running)return;const P=PATS[pat],[l,s]=P[i%P.length],o=$('#bo');$('#cue').textContent=l;o.style.transitionDuration=s+'s';if(l=='Breathe in')o.style.transform='scale(1.5)';else if(l=='Breathe out')o.style.transform='scale(1)';bt=setTimeout(()=>stepB(i+1),s*1000)}
+$('#bgo').onclick=()=>{if(running){stopB();return}running=true;$('#bgo').textContent='Stop';stepB(0)};
+function pats(){radios($('#pats'),Object.keys(PATS).map(k=>[k,k]),pat,v=>{pat=v;stopB();pats()})}
+/* insights */
+function drawIns(){const D=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],mx=Math.max(...S.mins,1),bi=S.mins.indexOf(mx);
+ $('#bars').innerHTML=`<g class="bar">${S.mins.map((v,i)=>{const h=v/mx*130;return`<rect class="${i==bi?'best':''}" x="${i*44+10}" y="${150-h}" width="30" height="${h}" rx="8"><title>${D[i]}: ${v} minutes</title></rect><text x="${i*44+25}" y="170" text-anchor="middle">${D[i]}</text>`}).join('')}</g>`;
+ $('#s1').textContent=S.mins.reduce((a,b)=>a+b,0);$('#s2').textContent=S.done;$('#ins').textContent=`You focus best on ${D[bi]}s. Maybe save the hard reading for then. 🌿`}
+/* orb */
+const cv=$('#orb'),cx=cv.getContext('2d');let W,H,mx=.5,my=.5,px=.5,py=.5,P=[];
+function size(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;P=Array.from({length:70},(_,i)=>({a:Math.random()*6.28,r:.28+Math.random()*.22,s:(.1+Math.random()*.25)*(i%2?1:-1),z:1+Math.random()*2}))}
+let hue=230;function drawOrbColor(){hue=MOODS[S.mood].h}
+function frame(t){if(document.hidden){requestAnimationFrame(frame);return}px+=(mx-px)*.05;py+=(my-py)*.05;cx.clearRect(0,0,W,H);const R=Math.min(W,H)*(.2+.012*Math.sin(t/1400)),X=W*.5+(px-.5)*W*.08,Y=H*.5+(py-.5)*H*.08;
+ const g=cx.createRadialGradient(X-R*.3,Y-R*.3,R*.1,X,Y,R*1.4);g.addColorStop(0,`hsla(${hue+40},90%,85%,.95)`);g.addColorStop(.6,`hsla(${hue},70%,60%,.55)`);g.addColorStop(1,`hsla(${hue},70%,60%,0)`);cx.fillStyle=g;cx.beginPath();cx.arc(X,Y,R*1.4,0,6.28);cx.fill();
+ const still=document.body.classList.contains('still')||matchMedia('(prefers-reduced-motion:reduce)').matches;
+ P.forEach(p=>{const a=p.a+(still?0:t/1000*p.s),rr=p.r*Math.min(W,H)*(1+.06*Math.sin(t/900+p.a));cx.fillStyle=`hsla(${hue},65%,45%,.55)`;cx.beginPath();cx.arc(X+Math.cos(a)*rr,Y+Math.sin(a)*rr,p.z,0,6.28);cx.fill()});requestAnimationFrame(frame)}
+addEventListener('pointermove',e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width;my=(e.clientY-r.top)/r.height});addEventListener('resize',size);
+/* a11y */
+function applyA(){const a=S.a,r=document.documentElement;document.body.classList.toggle('dys',!!a.dys);document.body.classList.toggle('still',!!a.rm);document.body.classList.toggle('calm',!!a.calm);
+ a.hc?r.dataset.contrast='high':delete r.dataset.contrast;a.th=='auto'?delete r.dataset.theme:r.dataset.theme=a.th;r.style.setProperty('--fs',a.fs+'%');
+ $('#a-dys').checked=!!a.dys;$('#a-hc').checked=!!a.hc;$('#a-rm').checked=!!a.rm;$('#a-calm').checked=!!a.calm;$('#a-fs').value=a.fs;$('#a-th').value=a.th;renderToday()}
+[['dys','a-dys'],['hc','a-hc'],['rm','a-rm'],['calm','a-calm']].forEach(([k,id])=>$('#'+id).onchange=e=>{S.a[k]=e.target.checked?1:0;save();applyA()});
+$('#a-fs').oninput=e=>{S.a.fs=+e.target.value;save();applyA()};$('#a-th').onchange=e=>{S.a.th=e.target.value;save();applyA()};
+$('#a11yb').onclick=()=>{const o=$('#panel').classList.toggle('open');$('#a11yb').setAttribute('aria-expanded',o);if(o)$('#a-dys').focus()};
+addEventListener('keydown',e=>{if(e.key=='Escape'&&$('#panel').classList.contains('open')){$('#panel').classList.remove('open');$('#a11yb').setAttribute('aria-expanded',false);$('#a11yb').focus()}});
+/* init */
+renderTabs();renderCols();pats();setDur(25);setMood(S.mood);applyA();drawIns();size();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
